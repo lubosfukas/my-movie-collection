@@ -6,6 +6,7 @@ import { LOAD_MOVIES, CHANGE_PAGE, SEARCH_MOVIES } from './actionTypes'
 import { loadMovies, loadMoviesFailed, loadMoviesSuccess } from './actions'
 import { IState } from './types'
 import { IMovie } from '../../types'
+import { config } from '../../utils'
 
 function* fetchMovies(action: { type: string; payload: { page: number; searchTerm: string } }) {
     const searchTerm = action.payload.searchTerm
@@ -13,7 +14,7 @@ function* fetchMovies(action: { type: string; payload: { page: number; searchTer
 
     try {
         const { data } = yield call(() =>
-            axios.get(`http://www.omdbapi.com/?apiKey=c332d2d3&s=${searchTerm}&page=${page}`)
+            axios.get(`http://www.omdbapi.com/?apiKey=${config.API_KEY}&s=${searchTerm}&page=${page}`)
         )
 
         const movies = data['Search']

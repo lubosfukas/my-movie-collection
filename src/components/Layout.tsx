@@ -9,7 +9,9 @@ interface IProps {
 }
 
 const Main = styled.main`
-    margin-top: 50px;
+    padding: 100px 0 50px 0;
+    margin: 0 auto;
+    width: 1000px;
 `
 
 const Layout: React.FC<IProps> = ({ children }) => {

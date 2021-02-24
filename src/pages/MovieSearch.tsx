@@ -1,18 +1,13 @@
 import React from 'react'
-import { DataGrid, SearchBar, LoadingSpinner } from '../components'
-import { PageChangeParams } from '@material-ui/data-grid'
-import { Alert, AlertTitle } from '@material-ui/lab'
+import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { PageChangeParams, RowSelectedParams } from '@material-ui/data-grid'
+import { Alert, AlertTitle } from '@material-ui/lab'
 
+import { DataGrid, SearchBar, LoadingSpinner, Auxiliary } from '../components'
 import { changePage, searchMovies } from '../modules/movies/actions'
 import { IState } from '../modules/movies/types'
-import { styled } from '../styled'
-
-const Wrapper = styled.div`
-    padding: 50px 0;
-    margin: 0 auto;
-    width: 1000px;
-`
+import { IMovie } from '../types'
 
 const columns = [
     {
@@ -25,6 +20,7 @@ const columns = [
 ]
 
 const MovieSearch = (): React.ReactElement => {
+    const history = useHistory()
     const dispatch = useDispatch()
     const { movies, totalResults, page, loading, error } = useSelector((state: IState) => ({
         movies: state.data.movies,
@@ -34,19 +30,26 @@ const MovieSearch = (): React.ReactElement => {
         error: state.error
     }))
 
-    const handlePageChange = (params: PageChangeParams) => dispatch(changePage(params.page))
+    const handlePageChange = (param: PageChangeParams) => dispatch(changePage(param.page))
     const handleSubmit = (searchTerm: string) => dispatch(searchMovies(searchTerm))
+    const handleSelectionChange = (param: RowSelectedParams) => {
+        const movie = param.data as IMovie
+        history.push(`/movie/${movie.imdbID}`)
+    }
+
+    const hasMovies = movies && movies.length > 0
 
     return (
-        <Wrapper>
+        <Auxiliary>
             {loading && <LoadingSpinner />}
             <SearchBar onSubmit={handleSubmit} />
+
             {error && (
                 <Alert severity="error">
                     <AlertTitle>{error}</AlertTitle>
                 </Alert>
             )}
-            {movies.length > 0 && (
+            {hasMovies && (
                 <DataGrid
                     rows={movies}
                     columns={columns}
@@ -54,9 +57,10 @@ const MovieSearch = (): React.ReactElement => {
                     rowCount={totalResults}
                     page={page}
                     handlePageChange={handlePageChange}
+                    handleSelectionChange={handleSelectionChange}
                 />
             )}
-        </Wrapper>
+        </Auxiliary>
     )
 }
 

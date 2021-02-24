@@ -13,7 +13,7 @@ type IResponse = [
     {
         data: Data
         error?: IError
-        isLoading: boolean
+        loading: boolean
     }
 ]
 
@@ -25,26 +25,26 @@ interface IProps {
 const useFetch = ({ url, params }: IProps): IResponse => {
     const [data, setData] = useState<Data>()
     const [error, setError] = useState<IError>()
-    const [isLoading, setIsLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true)
+                setLoading(true)
                 const response = await axios.get(url, { ...params })
 
                 setData(response.data)
-                setIsLoading(false)
+                setLoading(false)
             } catch (error) {
                 setError(error)
-                setIsLoading(false)
+                setLoading(false)
             }
         }
 
         fetchData()
     }, [url, params])
 
-    return [{ data, error, isLoading }]
+    return [{ data, error, loading }]
 }
 
 export default useFetch

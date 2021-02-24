@@ -1,5 +1,5 @@
 import React from 'react'
-import { DataGrid as PlainDataGrid, ColDef, PageChangeParams } from '@material-ui/data-grid'
+import { DataGrid as PlainDataGrid, ColDef, PageChangeParams, RowSelectedParams } from '@material-ui/data-grid'
 
 import { styled } from '../styled'
 import { IMovie } from '../types'
@@ -11,7 +11,9 @@ interface IProps {
     page: number
     pageSize?: number
     height?: string
-    handlePageChange: (params: PageChangeParams) => void
+    checkboxSelection?: boolean
+    handlePageChange?: (param: PageChangeParams) => void
+    handleSelectionChange?: (param: RowSelectedParams) => void
 }
 
 const Wrapper = styled.div<{ height?: string }>`
@@ -19,7 +21,17 @@ const Wrapper = styled.div<{ height?: string }>`
     width: 100%;
 `
 
-const DataGrid: React.FC<IProps> = ({ height, rows, rowCount, columns, page, handlePageChange, pageSize = 10 }) => {
+const DataGrid: React.FC<IProps> = ({
+    height,
+    rows,
+    rowCount,
+    columns,
+    page,
+    handlePageChange,
+    handleSelectionChange,
+    pageSize = 10,
+    checkboxSelection = false
+}) => {
     return (
         <Wrapper height={height}>
             <PlainDataGrid
@@ -31,7 +43,8 @@ const DataGrid: React.FC<IProps> = ({ height, rows, rowCount, columns, page, han
                 pageSize={pageSize}
                 paginationMode="server"
                 onPageChange={handlePageChange}
-                checkboxSelection
+                onRowSelected={handleSelectionChange}
+                checkboxSelection={checkboxSelection}
             />
         </Wrapper>
     )
