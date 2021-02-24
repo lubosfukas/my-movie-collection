@@ -5,7 +5,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects'
 import { LOAD_MOVIES, CHANGE_PAGE, SEARCH_MOVIES } from './actionTypes'
 import { loadMovies, loadMoviesFailed, loadMoviesSuccess } from './actions'
 import { IState } from './types'
-import { IMovie } from '../../types'
+import { addIds } from '../../utils/helpers'
 import { config } from '../../utils'
 
 function* fetchMovies(action: { type: string; payload: { page: number; searchTerm: string } }) {
@@ -18,11 +18,7 @@ function* fetchMovies(action: { type: string; payload: { page: number; searchTer
         )
 
         const movies = data['Search']
-        const mov = movies.map((x: IMovie) => {
-            const imdbId = (x['imdbID'] as string) || ''
-            const id = parseFloat(imdbId.substring(2))
-            return { ...x, id }
-        })
+        const mov = addIds(movies)
         const totalResults = parseFloat(data.totalResults)
 
         yield put(loadMoviesSuccess({ movies: mov, totalResults }))

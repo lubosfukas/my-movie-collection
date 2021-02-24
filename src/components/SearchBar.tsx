@@ -27,13 +27,7 @@ const SearchBar: React.FC<IProps> = ({ onSubmit }) => {
 
     return (
         <Wrapper>
-            <TextField
-                id="standard-search"
-                label="Search field"
-                type="search"
-                value={value}
-                onChange={handleOnChange}
-            />
+            <TextField id="standard-search" label="Search" type="search" value={value} onChange={handleOnChange} />
             <IconButton aria-label="search" disabled={!value} onClick={handleOnClick} style={{ marginLeft: '10px' }}>
                 <SearchIcon />
             </IconButton>

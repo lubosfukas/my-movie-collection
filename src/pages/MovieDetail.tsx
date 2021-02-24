@@ -4,13 +4,11 @@ import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, Tool
 import { Alert, AlertTitle } from '@material-ui/lab'
 import StarIcon from '@material-ui/icons/Star'
 
-import { LoadingSpinner, Auxiliary, useFetch } from '../components'
+import { LoadingSpinner, Auxiliary, useFetch, useLocalStorage } from '../components'
+import { addMovie, containsMovie, removeMovieByImdbId, addId } from '../utils/helpers'
 import { styled } from '../styled'
+import { IMovie } from '../types'
 import { config } from '../utils'
-
-interface IProps {
-    isFavorite?: boolean
-}
 
 const TitleFlexBox = styled.div`
     display: flex;
@@ -21,11 +19,12 @@ const SectionWrapper = styled.div`
     margin-top: 15px;
 `
 
-const MovieDetail: React.FC<IProps> = ({ isFavorite = false }) => {
+const MovieDetail = (): React.ReactElement => {
     const { movieId } = useParams<{ movieId: string }>()
     const [{ data, error, loading }] = useFetch({
         url: `http://www.omdbapi.com/?apiKey=${config.API_KEY}&i=${movieId}`
     })
+    const [favoriteMovies, setFavoriteMovies] = useLocalStorage<Array<IMovie>>('favorite', [])
 
     if (loading) return <LoadingSpinner />
     if (error)
@@ -35,7 +34,8 @@ const MovieDetail: React.FC<IProps> = ({ isFavorite = false }) => {
             </Alert>
         )
 
-    const tooltip = isFavorite ? '' : 'Add to favorites'
+    const isAlreadyFavorite = containsMovie(favoriteMovies, movieId)
+    const tooltip = isAlreadyFavorite ? 'Remove from favorites' : 'Add to favorites'
 
     return (
         <Auxiliary>
@@ -48,7 +48,15 @@ const MovieDetail: React.FC<IProps> = ({ isFavorite = false }) => {
                             </Typography>
                             <CardActions>
                                 <Tooltip title={tooltip}>
-                                    <IconButton aria-label="favorite" color="secondary" disabled={isFavorite}>
+                                    <IconButton
+                                        aria-label="favorite"
+                                        color={isAlreadyFavorite ? 'secondary' : 'primary'}
+                                        onClick={(_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                                            if (isAlreadyFavorite)
+                                                setFavoriteMovies(removeMovieByImdbId(favoriteMovies, movieId))
+                                            else setFavoriteMovies(addMovie(favoriteMovies, addId(data)))
+                                        }}
+                                    >
                                         <StarIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -122,7 +130,7 @@ const MovieDetail: React.FC<IProps> = ({ isFavorite = false }) => {
                                 data['Ratings'].length > 0 &&
                                 data['Ratings'].map((rating: { Source: string; Value: string }) => {
                                     return (
-                                        <Typography variant="body1" component="p">
+                                        <Typography key={rating.Source} variant="body1" component="p">
                                             <strong>{rating['Source']}:</strong> {rating['Value']}
                                         </Typography>
                                     )
