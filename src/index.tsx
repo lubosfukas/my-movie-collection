@@ -1,19 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { applyMiddleware, createStore, compose } from 'redux'
+import { Provider } from 'react-redux'
+import createSagaMiddleWare from 'redux-saga'
 
 import App from './App'
-import reportWebVitals from './reportWebVitals'
+import moviesReducer from './modules/movies/reducer'
+import moviesSaga from './modules/movies/sagas'
+
+const composeEnhancers = ((window as any)['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose) || compose
+const sagaMiddleWare = createSagaMiddleWare()
+const store = createStore(moviesReducer, composeEnhancers(applyMiddleware(sagaMiddleWare)))
 
 const app = (
-    <Router>
-        <App />
-    </Router>
+    <Provider store={store}>
+        <Router>
+            <App />
+        </Router>
+    </Provider>
 )
 
-ReactDOM.render(<React.StrictMode>{app}</React.StrictMode>, document.getElementById('root'))
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+sagaMiddleWare.run(moviesSaga)
+ReactDOM.render(app, document.getElementById('root'))

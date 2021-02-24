@@ -5,9 +5,7 @@ const globalStyle = createGlobalStyle<{ theme: Theme }>`
     body {
         margin: 0; 
         padding: 0; 
-        height: 100%;
-        width: 100%;
-        background-color: ${({ theme }) => theme.color.gray};
+        background-color: ${({ theme }) => theme.color.white};
         font-family: ${({ theme }) => theme.font.family};
         
         -webkit-font-smoothing: antialiased;
