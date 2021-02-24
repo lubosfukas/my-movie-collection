@@ -11,7 +11,6 @@ interface IProps {
 
 const Wrapper = styled.div`
     width: 250px;
-    margin-bottom: 30px;
     padding: 10px 10px 20px 30px;
     border-width: 1px;
     border-style: solid;

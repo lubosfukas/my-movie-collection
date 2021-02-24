@@ -7,7 +7,7 @@ import StarIcon from '@material-ui/icons/Star'
 import { LoadingSpinner, Auxiliary, useFetch, useLocalStorage } from '../components'
 import { addMovie, containsMovie, removeMovieByImdbId, addId } from '../utils/helpers'
 import { styled } from '../styled'
-import { IMovie } from '../types'
+import { IMovie } from '../utils/types'
 import { config } from '../utils'
 
 const TitleFlexBox = styled.div`

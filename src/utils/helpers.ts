@@ -1,4 +1,4 @@
-import { IMovie } from '../types'
+import { IMovie } from './types'
 
 export const addId = (movie: IMovie): IMovie => {
     const imdbId = movie['imdbID'] as string

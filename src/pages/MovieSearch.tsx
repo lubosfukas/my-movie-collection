@@ -1,25 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { PageChangeParams, RowSelectedParams } from '@material-ui/data-grid'
+import { DataGrid, PageChangeParams, SelectionModelChangeParams } from '@material-ui/data-grid'
 import { Alert, AlertTitle } from '@material-ui/lab'
+import { Button } from '@material-ui/core'
+import OpenIcon from '@material-ui/icons/OpenInNew'
 
-import { DataGrid, SearchBar, LoadingSpinner, Auxiliary } from '../components'
+import { SearchBar, LoadingSpinner, Auxiliary } from '../components'
 import { changePage, searchMovies } from '../modules/movies/actions'
+import { styled } from '../styled'
 import { IState } from '../modules/movies/types'
-import { IMovie } from '../types'
+import { IMovie } from '../utils/types'
+
+const Wrapper = styled.div`
+    height: 630px;
+    width: 100%;
+`
+
+const FlexBox = styled.div`
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+`
 
 const columns = [
     {
         field: 'id',
         headerName: 'IMDB ID',
-        width: 130
+        width: 130,
+        sortable: false,
+        filterable: false
     },
     { field: 'Title', headerName: 'Title', width: 670 },
     { field: 'Year', headerName: 'Year', width: 130 }
 ]
 
 const MovieSearch = (): React.ReactElement => {
+    const [selectedMovieIds, setSelectedMovieIds] = useState<Array<string>>([])
     const history = useHistory()
     const dispatch = useDispatch()
     const { movies, totalResults, page, loading, error } = useSelector((state: IState) => ({
@@ -30,10 +48,21 @@ const MovieSearch = (): React.ReactElement => {
         error: state.error
     }))
 
-    const handlePageChange = (param: PageChangeParams) => dispatch(changePage(param.page))
-    const handleSubmit = (searchTerm: string) => dispatch(searchMovies(searchTerm))
-    const handleSelectionChange = (param: RowSelectedParams) => {
-        const movie = param.data as IMovie
+    const handlePageChange = (param: PageChangeParams) => {
+        dispatch(changePage(param.page))
+        setSelectedMovieIds([])
+    }
+    const handleSubmit = (searchTerm: string) => {
+        dispatch(searchMovies(searchTerm))
+        setSelectedMovieIds([])
+    }
+    const handleSelectionChange = (params: SelectionModelChangeParams) =>
+        setSelectedMovieIds(params.selectionModel as Array<string>)
+    const handleOpenDetail = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const id = selectedMovieIds[0]
+        const movie = movies.find((movie: IMovie) => movie.id.toString() === id)
+
+        if (!movie) return
         history.push(`/movie/${movie.imdbID}`)
     }
 
@@ -42,23 +71,45 @@ const MovieSearch = (): React.ReactElement => {
     return (
         <Auxiliary>
             {loading && <LoadingSpinner />}
-            <SearchBar onSubmit={handleSubmit} />
+            <FlexBox>
+                <SearchBar onSubmit={handleSubmit} />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={selectedMovieIds.length !== 1}
+                    onClick={handleOpenDetail}
+                    style={{ marginLeft: 15 }}
+                    startIcon={<OpenIcon />}
+                >
+                    Open detail
+                </Button>
+            </FlexBox>
 
-            {error && (
+            {!loading && error && (
                 <Alert severity="error">
                     <AlertTitle>{error}</AlertTitle>
                 </Alert>
             )}
+            {!hasMovies && !loading && !error && (
+                <Alert severity="info">
+                    <AlertTitle>No results</AlertTitle>
+                </Alert>
+            )}
             {hasMovies && (
-                <DataGrid
-                    rows={movies}
-                    columns={columns}
-                    pageSize={10}
-                    rowCount={totalResults}
-                    page={page}
-                    handlePageChange={handlePageChange}
-                    handleSelectionChange={handleSelectionChange}
-                />
+                <Wrapper>
+                    <DataGrid
+                        rows={movies}
+                        columns={columns}
+                        rowCount={totalResults}
+                        pagination
+                        page={page}
+                        pageSize={10}
+                        paginationMode="server"
+                        onPageChange={handlePageChange}
+                        onSelectionModelChange={handleSelectionChange}
+                        checkboxSelection
+                    />
+                </Wrapper>
             )}
         </Auxiliary>
     )

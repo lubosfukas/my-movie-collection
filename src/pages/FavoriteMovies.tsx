@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { DataGrid, SelectionModelChangeParams } from '@material-ui/data-grid'
-import { Button } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
+import { Button } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete'
+import OpenIcon from '@material-ui/icons/OpenInNew'
 
 import { Auxiliary, useLocalStorage } from '../components'
 import { styled } from '../styled'
-import { IMovie } from '../types'
+import { IMovie } from '../utils/types'
 import { removeMoviesByIds } from '../utils/helpers'
 
-const Wrapper = styled.div<{ height?: string }>`
-    height: ${({ height }) => height || '630px'};
+const Wrapper = styled.div`
+    height: 630px;
     width: 100%;
 `
 
@@ -66,6 +68,7 @@ const FavoriteMovies = (): React.ReactElement => {
                     disabled={selectedMovieIds.length !== 1}
                     onClick={handleOpenDetail}
                     style={{ marginRight: 15 }}
+                    startIcon={<OpenIcon />}
                 >
                     Open detail
                 </Button>
@@ -74,6 +77,7 @@ const FavoriteMovies = (): React.ReactElement => {
                     color="secondary"
                     disabled={selectedMovieIds.length === 0}
                     onClick={handleRemove}
+                    startIcon={<DeleteIcon />}
                 >
                     Remove
                 </Button>
@@ -84,8 +88,8 @@ const FavoriteMovies = (): React.ReactElement => {
                     rowCount={favoriteMovies.length}
                     pageSize={10}
                     columns={columns}
-                    checkboxSelection
                     onSelectionModelChange={handleSelectionChange}
+                    checkboxSelection
                 />
             </Wrapper>
         </Auxiliary>

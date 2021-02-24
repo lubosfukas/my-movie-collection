@@ -1,5 +1,5 @@
 import { Action } from 'redux'
-import { IMovie } from '../../types'
+import { IMovie } from '../../utils/types'
 
 export interface ILoadMoviesActionPayload {
     searchTerm: string
