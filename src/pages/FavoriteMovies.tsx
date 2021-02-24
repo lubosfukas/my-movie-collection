@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { DataGrid, SelectionModelChangeParams } from '@material-ui/data-grid'
 import { Alert, AlertTitle } from '@material-ui/lab'
@@ -11,6 +11,10 @@ import { styled } from '../styled'
 import { IMovie } from '../utils/types'
 import { removeMoviesByIds } from '../utils/helpers'
 
+interface IProps {
+    title: string
+}
+
 const Wrapper = styled.div`
     height: 630px;
     width: 100%;
@@ -18,6 +22,7 @@ const Wrapper = styled.div`
 
 const FlexBox = styled.div`
     display: flex;
+    justify-content: flex-end;
     margin-bottom: 20px;
 `
 
@@ -31,8 +36,13 @@ const columns = [
     { field: 'Year', headerName: 'Year', width: 130 }
 ]
 
-const FavoriteMovies = (): React.ReactElement => {
+const FavoriteMovies: React.FC<IProps> = ({ title }) => {
     const [selectedMovieIds, setSelectedMovieIds] = useState<Array<string>>([])
+
+    useEffect(() => {
+        document.title = title
+    }, [title])
+
     const [favoriteMovies, setFavoriteMovies] = useLocalStorage<Array<IMovie>>('favorite', [])
     const history = useHistory()
 
@@ -46,16 +56,16 @@ const FavoriteMovies = (): React.ReactElement => {
 
     const handleOpenDetail = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const id = selectedMovieIds[0]
-        const imdb = favoriteMovies.find((movie: IMovie) => movie.id.toString() === id)?.imdbID
+        const movie = favoriteMovies.find((movie: IMovie) => movie.id.toString() === id)
 
-        if (!imdb) return
-        history.push(`/movie/${imdb}`)
+        if (!movie) return
+        history.push(`/movie/${movie['imdbID']}`, { title: movie['Title'], year: movie['Year'] })
     }
 
     if (favoriteMovies.length === 0)
         return (
             <Alert severity="info">
-                <AlertTitle>No movies!</AlertTitle>
+                <AlertTitle>No results!</AlertTitle>
             </Alert>
         )
 

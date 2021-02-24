@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { DataGrid, PageChangeParams, SelectionModelChangeParams } from '@material-ui/data-grid'
@@ -11,6 +11,10 @@ import { changePage, searchMovies } from '../modules/movies/actions'
 import { styled } from '../styled'
 import { IState } from '../modules/movies/types'
 import { IMovie } from '../utils/types'
+
+interface IProps {
+    title: string
+}
 
 const Wrapper = styled.div`
     height: 630px;
@@ -36,8 +40,13 @@ const columns = [
     { field: 'Year', headerName: 'Year', width: 130 }
 ]
 
-const MovieSearch = (): React.ReactElement => {
+const MovieSearch: React.FC<IProps> = ({ title }) => {
     const [selectedMovieIds, setSelectedMovieIds] = useState<Array<string>>([])
+
+    useEffect(() => {
+        document.title = title
+    }, [title])
+
     const history = useHistory()
     const dispatch = useDispatch()
     const { movies, totalResults, page, loading, error } = useSelector((state: IState) => ({
@@ -63,7 +72,7 @@ const MovieSearch = (): React.ReactElement => {
         const movie = movies.find((movie: IMovie) => movie.id.toString() === id)
 
         if (!movie) return
-        history.push(`/movie/${movie.imdbID}`)
+        history.push(`/movie/${movie['imdbID']}`, { title: movie['Title'], year: movie['Year'] })
     }
 
     const hasMovies = movies && movies.length > 0
@@ -73,16 +82,18 @@ const MovieSearch = (): React.ReactElement => {
             {loading && <LoadingSpinner />}
             <FlexBox>
                 <SearchBar onSubmit={handleSubmit} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={selectedMovieIds.length !== 1}
-                    onClick={handleOpenDetail}
-                    style={{ marginLeft: 15 }}
-                    startIcon={<OpenIcon />}
-                >
-                    Open detail
-                </Button>
+                {hasMovies && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={selectedMovieIds.length !== 1}
+                        onClick={handleOpenDetail}
+                        style={{ marginLeft: 15 }}
+                        startIcon={<OpenIcon />}
+                    >
+                        Open detail
+                    </Button>
+                )}
             </FlexBox>
 
             {!loading && error && (
@@ -92,7 +103,7 @@ const MovieSearch = (): React.ReactElement => {
             )}
             {!hasMovies && !loading && !error && (
                 <Alert severity="info">
-                    <AlertTitle>No results</AlertTitle>
+                    <AlertTitle>No results!</AlertTitle>
                 </Alert>
             )}
             {hasMovies && (

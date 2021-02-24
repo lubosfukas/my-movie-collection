@@ -15,13 +15,13 @@ function App(): React.ReactElement {
             <Layout>
                 <Switch>
                     <Route exact path={pages.HOME}>
-                        <MovieSearch />
+                        <MovieSearch title="Search movies" />
                     </Route>
                     <Route exact path={pages.MOVIE_DETAIL}>
                         <MovieDetail />
                     </Route>
                     <Route path={pages.FAVORITES}>
-                        <FavoriteMovies />
+                        <FavoriteMovies title="Favorite movies" />
                     </Route>
                     <Route>
                         <NoMatch />

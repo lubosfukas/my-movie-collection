@@ -40,6 +40,6 @@ export interface IState {
     loading: boolean
     searchTerm: string
     page: number
-    data: { movies: IMovie[]; totalResults: number }
+    data: { movies: Array<IMovie>; totalResults: number }
     error?: string
 }

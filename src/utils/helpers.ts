@@ -13,13 +13,13 @@ export const addIds = (movies: Array<IMovie>): Array<IMovie> => {
     return movies.map((movie: IMovie) => addId(movie))
 }
 
-export const containsMovie = (favoriteMovies: Array<IMovie>, imdbId: string): boolean =>
-    favoriteMovies && favoriteMovies.length > 0 ? favoriteMovies.some(p => p.imdbID === imdbId) : false
+export const containsMovie = (movies: Array<IMovie>, imdbId: string): boolean =>
+    movies && movies.length > 0 ? movies.some(x => x['imdbID'] === imdbId) : false
 
 export const addMovie = (movies: Array<IMovie>, movie: IMovie): Array<IMovie> => {
     if (!movie) return movies
 
-    const hasMovie = containsMovie(movies, movie.imdbID)
+    const hasMovie = containsMovie(movies, movie['imdbID'])
     const moviesCopy = movies && movies.length > 0 ? [...movies] : []
 
     if (!hasMovie) moviesCopy.push({ ...movie })
@@ -29,7 +29,7 @@ export const addMovie = (movies: Array<IMovie>, movie: IMovie): Array<IMovie> =>
 
 export const removeMovieByImdbId = (movies: Array<IMovie>, imdbId: string): Array<IMovie> => {
     const moviesCopy = [...movies]
-    return moviesCopy.filter(movie => movie.imdbID !== imdbId)
+    return moviesCopy.filter(movie => movie['imdbID'] !== imdbId)
 }
 
 export const removeMoviesByIds = (movies: Array<IMovie>, ids: Array<string>): Array<IMovie> =>

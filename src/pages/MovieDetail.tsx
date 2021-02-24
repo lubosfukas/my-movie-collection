@@ -1,5 +1,5 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useParams, useLocation } from 'react-router-dom'
 import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, Tooltip } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import StarIcon from '@material-ui/icons/Star'
@@ -21,6 +21,13 @@ const SectionWrapper = styled.div`
 
 const MovieDetail = (): React.ReactElement => {
     const { movieId } = useParams<{ movieId: string }>()
+    const location = useLocation<{ title: string; year: string }>()
+
+    useEffect(() => {
+        if (!location.state) document.title = 'Movie detail'
+        else document.title = `${location.state?.title} (${location.state.year})`
+    }, [location])
+
     const [{ data, error, loading }] = useFetch({
         url: `http://www.omdbapi.com/?apiKey=${config.API_KEY}&i=${movieId}`
     })
