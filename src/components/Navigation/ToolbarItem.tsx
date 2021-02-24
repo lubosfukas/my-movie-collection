@@ -1,6 +1,6 @@
-import React from 'react'
-
+import React, { useContext } from 'react'
 import { NavLink as PlainNavLink } from 'react-router-dom'
+import { ThemeContext } from 'styled-components'
 import { styled } from '../../styled'
 
 const Li = styled.li`
@@ -26,12 +26,15 @@ interface IProps {
     exact?: boolean
 }
 
-const ToolbarItem: React.FC<IProps> = ({ to, children, exact = false }) => (
-    <Li>
-        <NavLink to={to} exact={exact}>
-            {children}
-        </NavLink>
-    </Li>
-)
+const ToolbarItem: React.FC<IProps> = ({ to, children, exact = false }) => {
+    const themeContext = useContext(ThemeContext)
+    return (
+        <Li>
+            <NavLink to={to} exact={exact} activeStyle={{ backgroundColor: themeContext.color.red }}>
+                {children}
+            </NavLink>
+        </Li>
+    )
+}
 
 export default ToolbarItem

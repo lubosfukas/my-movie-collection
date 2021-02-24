@@ -5,7 +5,8 @@ import { styled } from '../../styled'
 import { pages } from '../../utils'
 
 const Ul = styled.ul`
-    margin: 0;
+    width: ${({ theme }) => theme.container.width};
+    margin: 0 auto;
     padding: 0;
     list-style: none;
     overflow: hidden;
@@ -13,7 +14,9 @@ const Ul = styled.ul`
 
 const ToolbarItems = (): React.ReactElement => (
     <Ul>
-        <ToolbarItem to={pages.HOME}>Home</ToolbarItem>
+        <ToolbarItem exact to={pages.HOME}>
+            Home
+        </ToolbarItem>
         <ToolbarItem to={pages.FAVORITES}>Favorites</ToolbarItem>
     </Ul>
 )

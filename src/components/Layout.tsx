@@ -11,7 +11,7 @@ interface IProps {
 const Main = styled.main`
     padding: 100px 0 50px 0;
     margin: 0 auto;
-    width: 1000px;
+    width: ${({ theme }) => theme.container.width};
 `
 
 const Layout: React.FC<IProps> = ({ children }) => {

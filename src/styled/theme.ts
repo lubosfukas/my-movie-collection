@@ -3,7 +3,6 @@ import baseStyled, { ThemedStyledInterface } from 'styled-components'
 export const theme = {
     color: {
         dark: '#222831',
-        blue: '#30475e',
         red: '#f05454',
         gray: '#dddddd',
         white: '#ffffff',
@@ -11,6 +10,9 @@ export const theme = {
     },
     font: {
         family: 'Verdana, sans-serif'
+    },
+    container: {
+        width: '1000px'
     }
 }
 
