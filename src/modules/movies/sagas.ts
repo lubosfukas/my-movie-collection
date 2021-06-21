@@ -5,8 +5,10 @@ import { takeEvery, put, call, select } from 'redux-saga/effects'
 import { LOAD_MOVIES, CHANGE_PAGE, SEARCH_MOVIES } from './actionTypes'
 import { loadMovies, loadMoviesFailed, loadMoviesSuccess } from './actions'
 import { IState } from './types'
-import { addIds } from '../../utils/helpers'
 import { config } from '../../utils'
+
+const getSearchTerm = (state: IState) => state.searchTerm
+const getPage = (state: IState) => state.page
 
 function* fetchMovies(action: { type: string; payload: { page: number; searchTerm: string } }) {
     const searchTerm = action.payload.searchTerm
@@ -14,23 +16,28 @@ function* fetchMovies(action: { type: string; payload: { page: number; searchTer
 
     try {
         const { data } = yield call(() =>
-            axios.get(`http://www.omdbapi.com/?apiKey=${config.API_KEY}&s=${searchTerm}&page=${page}`)
+            axios.get(`http://www.omdbapi.com/?apiKey=${config.API_KEY}&s=${searchTerm}&type=movie&page=${page}`)
         )
 
-        const movies = data['Search']
-        const mov = addIds(movies)
-        const totalResults = parseFloat(data.totalResults)
+        const strResponse: string = data['Response']
+        const isValid = strResponse.toLowerCase() === 'true'
 
-        yield put(loadMoviesSuccess({ movies: mov, totalResults }))
+        if (isValid) {
+            const movies = data['Search']
+            const totalResults = parseInt(data.totalResults, 10)
+            yield put(loadMoviesSuccess({ movies: movies, totalResults }))
+        } else {
+            const errorMessage = data['Error']
+            yield put(loadMoviesFailed(errorMessage))
+        }
     } catch (error) {
-        const errorResponse = error?.response.data['Error'] || ''
-        const errorMessage = errorResponse ? `Failed to load - ${errorResponse}` : 'Failed to load'
+        const errorMessage: string = error?.response.data['Error'] || ''
         yield put(loadMoviesFailed(errorMessage))
     }
 }
 
 function* changePage(action: { type: string; payload: number }) {
-    const searchTerm = yield select((state: IState) => state.searchTerm)
+    const searchTerm = yield select(getSearchTerm)
     const page = action.payload
 
     yield put(loadMovies({ searchTerm, page }))
@@ -38,7 +45,7 @@ function* changePage(action: { type: string; payload: number }) {
 
 function* searchMovies(action: { type: string; payload: string }) {
     const searchTerm = action.payload
-    const page = yield select((state: IState) => state.page)
+    const page = yield select(getPage)
 
     yield put(loadMovies({ searchTerm, page }))
 }

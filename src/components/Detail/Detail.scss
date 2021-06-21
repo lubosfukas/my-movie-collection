@@ -1,0 +1,30 @@
+.card {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1024px;
+    margin: 20px auto;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    color: black;
+}
+
+.margin-bottom {
+    margin-bottom: 10px;
+}
+
+.poster {
+    height: 500px;
+    width: 300px;
+    padding: 30px;
+}

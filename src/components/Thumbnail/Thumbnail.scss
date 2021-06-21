@@ -1,0 +1,29 @@
+.thumbnail-card {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    cursor: pointer;
+    width: 320px;
+
+    @media only screen and (width: 320px) {
+        width: 280px;
+    }
+}
+
+.thumbnail-card-content {
+    padding: 0 16px;
+}
+
+.thumbnail-title {
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.thumbnail-poster {
+    height: 500px; /* needs to be specified */
+    width: 100%;
+
+    @media only screen and (width: 320px) {
+        height: 400px;
+    }
+}

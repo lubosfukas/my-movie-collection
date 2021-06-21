@@ -1,0 +1,23 @@
+$primary-color: #00adb5;
+$secondary-color: #aad8d3;
+$tertiary-color: #393e46;
+$quaternary-color: #eeeeee;
+
+.box {
+    background-color: $quaternary-color;
+    border-radius: 5px;
+    display: flex;
+    margin: 0 10px;
+    max-width: 300px;
+    padding: 0 15px;
+}
+
+.icon {
+    color: $tertiary-color;
+    padding: 3px 0 0 0;
+}
+
+.input {
+    color: $tertiary-color;
+    margin-left: 10px;
+}

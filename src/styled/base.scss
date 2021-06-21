@@ -1,0 +1,31 @@
+$primary-color: #00adb5;
+$secondary-color: #aad8d3;
+$tertiary-color: #393e46;
+$quaternary-color: #eeeeee;
+$red-color: #f55c47;
+$black-color: #000000;
+$white-color: #ffffff;
+$font-family: Verdana, sans-serif;
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: $quaternary-color;
+    font-family: $font-family;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    height: 100%;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
