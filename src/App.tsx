@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom'
 import { Layout } from './components'
 import { SearchMovies, MovieDetail, FavoriteMovies, NoMatch } from './pages'
 import { pages } from './utils'
-import './styled/base.scss'
+import './App.scss'
 
 function App(): React.ReactElement {
     return (
