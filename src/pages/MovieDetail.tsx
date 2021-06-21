@@ -7,12 +7,11 @@ import { Detail, LoadingSpinner } from '../components'
 import { useLocalStorage } from '../hooks'
 import { setMovies, hasMovie } from '../utils/helpers'
 import { IMovie, IMovieDetail, IResponseError } from '../utils/types'
-import { config } from '../utils'
 import axios, { AxiosError } from 'axios'
 
 const fetchMovieDetail = async (movieId: string) => {
     const { data } = await axios.get<IMovieDetail>(
-        `http://www.omdbapi.com/?apiKey=${config.API_KEY}&i=${movieId}&plot=full`
+        `http://www.omdbapi.com/?apiKey=${process.env.REACT_APP_API_KEY}&i=${movieId}&plot=full`
     )
 
     return data

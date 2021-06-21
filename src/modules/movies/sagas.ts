@@ -5,7 +5,6 @@ import { takeEvery, put, call, select } from 'redux-saga/effects'
 import { LOAD_MOVIES, CHANGE_PAGE, SEARCH_MOVIES } from './actionTypes'
 import { loadMovies, loadMoviesFailed, loadMoviesSuccess } from './actions'
 import { IState } from './types'
-import { config } from '../../utils'
 
 const getSearchTerm = (state: IState) => state.searchTerm
 const getPage = (state: IState) => state.page
@@ -16,7 +15,9 @@ function* fetchMovies(action: { type: string; payload: { page: number; searchTer
 
     try {
         const { data } = yield call(() =>
-            axios.get(`http://www.omdbapi.com/?apiKey=${config.API_KEY}&s=${searchTerm}&type=movie&page=${page}`)
+            axios.get(
+                `http://www.omdbapi.com/?apiKey=${process.env.REACT_APP_API_KEY}&s=${searchTerm}&type=movie&page=${page}`
+            )
         )
 
         const strResponse: string = data['Response']
