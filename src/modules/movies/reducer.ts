@@ -30,11 +30,13 @@ const reducer = (state: IState = initialState, action: { type: string; payload: 
         }
 
         case LOAD_MOVIES_SUCCESS: {
+            const newData = { ...action.payload, movies: [...state.data.movies, ...action.payload.movies] }
+
             return {
                 ...state,
                 loading: false,
                 error: undefined,
-                data: action.payload
+                data: newData
             }
         }
 

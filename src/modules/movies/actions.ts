@@ -14,9 +14,9 @@ export const loadMovies = ({ searchTerm, page }: ILoadMoviesActionPayload): ILoa
     payload: { searchTerm, page }
 })
 
-export const loadMoviesFailed = (error: string): ILoadMoviesFailedAction => ({
+export const loadMoviesFailed = (errorMessage: string): ILoadMoviesFailedAction => ({
     type: LOAD_MOVIES_FAILED,
-    payload: error
+    payload: errorMessage ? `Failed to load - ${errorMessage}` : 'Failed to load'
 })
 
 export const loadMoviesSuccess = ({
