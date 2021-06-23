@@ -1,11 +1,21 @@
+type Response = 'True' | 'False'
+type Type = 'movie' | 'series' | 'episode'
+
 export interface IMovie {
     Title: string
     Year: string
     imdbID: string
     Poster: string
+    Type: Type
 }
 
-export interface IRating {
+export interface IMoviesResponse {
+    Search: Array<IMovie>
+    totalResults: string
+    Response: Response
+}
+
+export interface IMovieRating {
     Source: string
     Value: string
 }
@@ -24,12 +34,12 @@ export interface IMovieDetail {
     Poster: string
     Production: string
     Rated: string
-    Ratings: Array<IRating>
+    Ratings: Array<IMovieRating>
     Released: string
     Response: string
     Runtime: string
     Title: string
-    Type: string
+    Type: Type
     Website: string
     Writer: string
     Year: string
@@ -40,5 +50,5 @@ export interface IMovieDetail {
 
 export interface IResponseError {
     Error: string
-    Response: 'True' | 'False'
+    Response: Response
 }

@@ -3,7 +3,7 @@ import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, Tool
 import StarIcon from '@material-ui/icons/Star'
 import StarOutlineIcon from '@material-ui/icons/StarOutline'
 
-import { IMovieDetail, IRating } from '../../utils/types'
+import { IMovieDetail, IMovieRating } from '../../utils/types'
 import './Detail.scss'
 
 interface IProps extends IMovieDetail {
@@ -91,7 +91,7 @@ const Detail: React.FC<IProps> = props => {
                     <SectionItem name="Metascore" value={metascore} />
                     {ratings &&
                         ratings.length > 0 &&
-                        ratings.map((rating: IRating) => {
+                        ratings.map((rating: IMovieRating) => {
                             const source = rating['Source']
                             return <SectionItem key={source} name={source} value={rating['Value']} />
                         })}
