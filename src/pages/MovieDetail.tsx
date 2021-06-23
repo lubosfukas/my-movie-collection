@@ -16,23 +16,16 @@ const MovieDetail = (): React.ReactElement => {
         else document.title = `${location.state?.title} (${location.state.year})`
     }, [location])
 
-    const { isFetching, error, data } = useFetchMovieDetail(movieId)
+    const { data, isFetching } = useFetchMovieDetail(movieId)
     const [favoriteMovies, setFavoriteMovies] = useLocalStorage<Array<IMovie>>('favorite', [])
 
+    const responseError = data && data.Response && data.Response === 'False' ? data.Error : ''
+
     if (isFetching) return <LoadingSpinner />
-    if (!isFetching && error) {
-        const response = error.response?.data
-
-        if (response?.Response === 'False')
-            return (
-                <Alert severity="error">
-                    <AlertTitle>{response?.Error}</AlertTitle>
-                </Alert>
-            )
-
+    if (!isFetching && responseError) {
         return (
             <Alert severity="error">
-                <AlertTitle>Failed to load!</AlertTitle>
+                <AlertTitle>{responseError}</AlertTitle>
             </Alert>
         )
     }

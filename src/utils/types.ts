@@ -1,6 +1,11 @@
 type Response = 'True' | 'False'
 type Type = 'movie' | 'series' | 'episode'
 
+interface IApiResponseError {
+    Response?: Response
+    Error?: string
+}
+
 export interface IMovie {
     Title: string
     Year: string
@@ -9,10 +14,13 @@ export interface IMovie {
     Type: Type
 }
 
-export interface IMoviesResponse {
-    Search: Array<IMovie>
-    totalResults: string
-    Response: Response
+export interface IMoviesApiResponse extends IApiResponseError {
+    Search?: Array<IMovie>
+    totalResults?: string
+}
+
+export interface IMoviesResponse extends IMoviesApiResponse {
+    nextPage: number
 }
 
 export interface IMovieRating {
@@ -20,7 +28,7 @@ export interface IMovieRating {
     Value: string
 }
 
-export interface IMovieDetail {
+export interface IMovieDetail extends IApiResponseError {
     Actors: string
     Awards: string
     BoxOffice: string
@@ -36,7 +44,6 @@ export interface IMovieDetail {
     Rated: string
     Ratings: Array<IMovieRating>
     Released: string
-    Response: string
     Runtime: string
     Title: string
     Type: Type
@@ -46,9 +53,4 @@ export interface IMovieDetail {
     imdbID: string
     imdbRating: string
     imdbVotes: string
-}
-
-export interface IResponseError {
-    Error: string
-    Response: Response
 }

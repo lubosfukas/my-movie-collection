@@ -1,6 +1,6 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { useQuery, UseQueryResult } from 'react-query'
-import { IMovieDetail, IResponseError } from '../../utils/types'
+import { IMovieDetail } from '../../utils/types'
 
 const fetchMovieDetail = async (movieId: string) => {
     const { data } = await axios.get<IMovieDetail>(
@@ -10,8 +10,8 @@ const fetchMovieDetail = async (movieId: string) => {
     return data
 }
 
-const useFetchMovieDetail = (movieId: string): UseQueryResult<IMovieDetail, AxiosError<IResponseError>> => {
-    return useQuery<IMovieDetail, AxiosError<IResponseError>>('fetchMovieDetail', () => fetchMovieDetail(movieId), {
+const useFetchMovieDetail = (movieId: string): UseQueryResult<IMovieDetail> => {
+    return useQuery<IMovieDetail>('fetchMovieDetail', () => fetchMovieDetail(movieId), {
         retry: false
     })
 }

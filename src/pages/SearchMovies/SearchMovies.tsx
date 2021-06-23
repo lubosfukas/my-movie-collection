@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { IconButton } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
@@ -15,7 +15,6 @@ interface IProps {
 }
 
 const SearchMovies: React.FC<IProps> = ({ title }) => {
-    const [page, setPage] = useState(1)
     useEffect(() => {
         document.title = title
     }, [title])
@@ -27,17 +26,13 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
         throw new Error('useCount must be used within a CountProvider')
     }
 
-    const { data, error, isFetching } = useFetchMovies({
-        page: 1,
-        searchTerm: movieContext.searchTerm
-    })
+    const { data, isFetching, fetchNextPage, isFetchingNextPage } = useFetchMovies(movieContext.searchTerm)
 
-    const movies = data && data['Search'] ? data['Search'] : []
-    const totalResults = data && data.totalResults ? parseInt(data.totalResults, 10) : 0
-
-    const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        setPage(page + 1)
-    }
+    const responseError = data && data.pages.length === 1 ? data.pages[0].Error : ''
+    const moviesArrays =
+        data && data.pages.map(response => (response.Search ? response.Search.map(movie => movie) : []))
+    const movies = moviesArrays ? moviesArrays.reduce((prev, cur) => prev.concat(cur), []) : []
+    const totalResults = data && data.pages[0].totalResults ? parseInt(data.pages[0].totalResults, 10) : 0
 
     const handleOpenDetail = (imdbId: string) => {
         const movie = movies.find((movie: IMovie) => movie['imdbID'].toString() === imdbId)
@@ -49,16 +44,10 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
     const hasMovies = movies && movies.length > 0
     const moreMovies = movies && movies.length < totalResults
 
-    if (!hasMovies && !isFetching && error)
+    if (!hasMovies && !isFetching && responseError)
         return (
-            <Alert severity="error">
-                <AlertTitle>{error}</AlertTitle>
-            </Alert>
-        )
-    if (!hasMovies && !isFetching && !error)
-        return (
-            <Alert severity="info">
-                <AlertTitle>No results!</AlertTitle>
+            <Alert severity="warning">
+                <AlertTitle>{responseError}</AlertTitle>
             </Alert>
         )
 
@@ -83,7 +72,7 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
                 })}
             </div>
             {moreMovies && (
-                <IconButton onClick={handlePageChange}>
+                <IconButton onClick={() => fetchNextPage()} disabled={!moreMovies || isFetchingNextPage}>
                     <ExpandMore />
                 </IconButton>
             )}

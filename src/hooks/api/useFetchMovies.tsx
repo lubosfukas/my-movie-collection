@@ -1,26 +1,28 @@
-import axios, { AxiosError } from 'axios'
-import { useQuery, UseQueryResult } from 'react-query'
-import { IMoviesResponse, IResponseError } from '../../utils/types'
+import axios from 'axios'
+import { useInfiniteQuery, UseInfiniteQueryResult } from 'react-query'
+import { IMoviesApiResponse, IMoviesResponse } from '../../utils/types'
 
-const fetchMovies = async ({ page, searchTerm }: { page: number; searchTerm: string }) => {
-    const { data } = await axios.get(
-        `http://www.omdbapi.com/?apiKey=${process.env.REACT_APP_API_KEY}&s=${searchTerm}&type=movie&page=${page}`
+const fetchMovies = async (searchTerm: string, pageParam = 1) => {
+    const { data } = await axios.get<IMoviesApiResponse>(
+        `http://www.omdbapi.com/?apiKey=${process.env.REACT_APP_API_KEY}&s=${searchTerm}&type=movie&page=${pageParam}`
     )
 
-    return data
+    const response: IMoviesResponse = {
+        ...data,
+        nextPage: pageParam + 1
+    }
+
+    return response
 }
 
-const useFetchMovies = ({
-    page,
-    searchTerm
-}: {
-    page: number
-    searchTerm: string
-}): UseQueryResult<IMoviesResponse, AxiosError<IResponseError>> => {
-    return useQuery<IMoviesResponse, AxiosError<IResponseError>>(
+const useFetchMovies = (searchTerm: string): UseInfiniteQueryResult<IMoviesResponse> => {
+    return useInfiniteQuery<IMoviesResponse>(
         `search:${searchTerm}`,
-        () => fetchMovies({ page, searchTerm }),
-        { enabled: searchTerm !== '' }
+        ({ pageParam }) => fetchMovies(searchTerm, pageParam),
+        {
+            enabled: searchTerm !== '',
+            getNextPageParam: (lastPage: IMoviesResponse) => lastPage.nextPage
+        }
     )
 }
 
