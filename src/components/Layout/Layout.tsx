@@ -24,7 +24,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
 
     return (
         <Auxiliary>
-            <AppBar position="static" className="app-bar">
+            <AppBar position="sticky" className="app-bar">
                 <Toolbar>
                     <IconButton onClick={() => setShowDrawer(!showDrawer)}>
                         <MenuIcon className="menu-icon" />
