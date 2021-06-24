@@ -7,7 +7,7 @@ import StarIcon from '@material-ui/icons/Star'
 
 import Auxiliary from '../common/Auxiliary'
 import SearchBar from '../SearchBar/SearchBar'
-import useWindowSize from '../hooks/useWindowSize'
+import { useWindowSize } from '../../hooks'
 import './Layout.scss'
 
 interface IProps {

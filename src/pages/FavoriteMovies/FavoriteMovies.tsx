@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Alert, AlertTitle } from '@material-ui/lab'
 
-import { Thumbnail, useLocalStorage } from '../../components'
+import { Thumbnail } from '../../components'
+import { useLocalStorage } from '../../hooks'
 import { IMovie } from '../../utils/types'
 import './FavoriteMovies.scss'
 

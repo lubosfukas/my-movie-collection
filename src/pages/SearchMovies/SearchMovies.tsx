@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import { IconButton } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { Thumbnail, LoadingSpinner } from '../../components'
-import { changePage } from '../../modules/movies/actions'
-import { IState } from '../../modules/movies/types'
+import { useFetchMovies } from '../../hooks'
 import { IMovie } from '../../utils/types'
 import './SearchMovies.scss'
+import { MovieContext } from '../../App'
 
 interface IProps {
     title: string
@@ -21,18 +20,19 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
     }, [title])
 
     const history = useHistory()
-    const dispatch = useDispatch()
-    const { movies, totalResults, page, loading, error } = useSelector((state: IState) => ({
-        movies: state.data.movies,
-        totalResults: state.data.totalResults,
-        page: state.page,
-        loading: state.loading,
-        error: state.error
-    }))
+    const movieContext = useContext(MovieContext)
 
-    const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        dispatch(changePage(page + 1))
+    if (!movieContext) {
+        throw new Error('useCount must be used within a CountProvider')
     }
+
+    const { data, isFetching, fetchNextPage, isFetchingNextPage } = useFetchMovies(movieContext.searchTerm)
+
+    const responseError = data && data.pages.length === 1 ? data.pages[0].Error : ''
+    const moviesArrays =
+        data && data.pages.map(response => (response.Search ? response.Search.map(movie => movie) : []))
+    const movies = moviesArrays ? moviesArrays.reduce((prev, cur) => prev.concat(cur), []) : []
+    const totalResults = data && data.pages[0].totalResults ? parseInt(data.pages[0].totalResults, 10) : 0
 
     const handleOpenDetail = (imdbId: string) => {
         const movie = movies.find((movie: IMovie) => movie['imdbID'].toString() === imdbId)
@@ -42,24 +42,18 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
     }
 
     const hasMovies = movies && movies.length > 0
-    const moreMovies = movies.length < totalResults
+    const moreMovies = movies && movies.length < totalResults
 
-    if (!hasMovies && !loading && error)
+    if (!hasMovies && !isFetching && responseError)
         return (
-            <Alert severity="error">
-                <AlertTitle>{error}</AlertTitle>
-            </Alert>
-        )
-    if (!hasMovies && !loading && !error)
-        return (
-            <Alert severity="info">
-                <AlertTitle>No results!</AlertTitle>
+            <Alert severity="warning">
+                <AlertTitle>{responseError}</AlertTitle>
             </Alert>
         )
 
     return (
         <div className="column-flex-box">
-            {loading && <LoadingSpinner />}
+            {isFetching && <LoadingSpinner />}
             <div className="row-flex-box">
                 {movies.map((movie: IMovie) => {
                     const imdbId = movie['imdbID']
@@ -78,7 +72,7 @@ const SearchMovies: React.FC<IProps> = ({ title }) => {
                 })}
             </div>
             {moreMovies && (
-                <IconButton onClick={handlePageChange}>
+                <IconButton onClick={() => fetchNextPage()} disabled={!moreMovies || isFetchingNextPage}>
                     <ExpandMore />
                 </IconButton>
             )}

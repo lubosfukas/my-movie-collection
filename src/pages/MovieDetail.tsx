@@ -1,21 +1,11 @@
 import React, { useEffect } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { Alert, AlertTitle } from '@material-ui/lab'
 
-import { Detail, LoadingSpinner, useLocalStorage } from '../components'
-import { setMovies, hasMovie } from '../utils/helpers'
-import { IMovie, IMovieDetail, IResponseError } from '../utils/types'
-import { config } from '../utils'
-import axios, { AxiosError } from 'axios'
-
-const fetchMovieDetail = async (movieId: string) => {
-    const { data } = await axios.get<IMovieDetail>(
-        `http://www.omdbapi.com/?apiKey=${config.API_KEY}&i=${movieId}&plot=full`
-    )
-
-    return data
-}
+import { Detail, LoadingSpinner } from '../components'
+import { useFetchMovieDetail, useLocalStorage } from '../hooks'
+import { updateFavoriteMovies, isFavoriteMovie } from '../utils/helpers'
+import { IMovie } from '../utils/types'
 
 const MovieDetail = (): React.ReactElement => {
     const { movieId } = useParams<{ movieId: string }>()
@@ -26,35 +16,23 @@ const MovieDetail = (): React.ReactElement => {
         else document.title = `${location.state?.title} (${location.state.year})`
     }, [location])
 
-    const { isFetching, error, data } = useQuery<IMovieDetail, AxiosError<IResponseError>>(
-        'fetchMovieDetail',
-        () => fetchMovieDetail(movieId),
-        { retry: false }
-    )
-
+    const { data, isFetching } = useFetchMovieDetail(movieId)
     const [favoriteMovies, setFavoriteMovies] = useLocalStorage<Array<IMovie>>('favorite', [])
 
+    const responseError = data && data.Response && data.Response === 'False' ? data.Error : ''
+
     if (isFetching) return <LoadingSpinner />
-    if (!isFetching && error) {
-        const response = error.response?.data
-
-        if (response?.Response === 'False')
-            return (
-                <Alert severity="error">
-                    <AlertTitle>{response?.Error}</AlertTitle>
-                </Alert>
-            )
-
+    if (!isFetching && responseError) {
         return (
             <Alert severity="error">
-                <AlertTitle>Failed to load!</AlertTitle>
+                <AlertTitle>{responseError}</AlertTitle>
             </Alert>
         )
     }
 
     if (!isFetching && data) {
-        const isFavorite = hasMovie(favoriteMovies, movieId)
-        const handleFavoriteClicked = () => setFavoriteMovies(setMovies(favoriteMovies, data))
+        const isFavorite = isFavoriteMovie(favoriteMovies, movieId)
+        const handleFavoriteClicked = () => setFavoriteMovies(updateFavoriteMovies(favoriteMovies, data))
 
         return <Detail isFavorite={isFavorite} handleFavoriteClicked={handleFavoriteClicked} {...data} />
     }
