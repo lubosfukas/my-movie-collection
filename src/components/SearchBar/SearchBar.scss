@@ -1,10 +1,7 @@
-$primary-color: #00adb5;
-$secondary-color: #aad8d3;
-$tertiary-color: #393e46;
-$quaternary-color: #eeeeee;
+@import 'src/App';
 
 .box {
-    background-color: $quaternary-color;
+    background-color: $grey-color;
     border-radius: 5px;
     display: flex;
     margin: 0 10px;
@@ -13,11 +10,11 @@ $quaternary-color: #eeeeee;
 }
 
 .icon {
-    color: $tertiary-color;
+    color: $dark-color;
     padding: 3px 0 0 0;
 }
 
 .input {
-    color: $tertiary-color;
+    color: $dark-color;
     margin-left: 10px;
 }
