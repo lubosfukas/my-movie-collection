@@ -1,46 +1,76 @@
-# Getting Started with Create React App
+# My Movie Collection
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Simple react application for saving favorite movies using OMDb API.
 
-## Available Scripts
+## File structure
 
-In the project directory, you can run:
+```text
+src
+├── components          # Feature first grouped components
+├── hooks               # Hooks used across whole application
+├── pages               # Top level views
+├── utils               # Tools and utilities
+```
 
-### `yarn start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Install latest LTS version of [Node](https://nodejs.org/en/).
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+Install latest version of yarn.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install -g yarn
+```
 
-### `yarn build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+In `src` folder create file `.env.local`. Add to this file `REACT_APP_API_KEY` with OMDb API key generated [here](https://www.omdbapi.com/apikey.aspx).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```text
+REACT_APP_API_KEY=your_key_here
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
+Install Visual Studio Code recommended extensions. Open Extensions tab and type `@recommended`. Install all of them.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Install all dependencies.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+yarn install
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+or simply
 
-## Learn More
+```bash
+yarn
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Start the project.
+
+```bash
+yarn start
+```
+
+## Development
+
+Preferably in Visual Studio Code with ESLint and Prettier installed. Commits are written in [Conventional Commits](https://www.conventionalcommits.org/).
+
+
+Scripts
+
+```bash
+yarn
+yarn install
+yarn start
+yarn lint
+yarn lint:fix
+```
+
+
+Build with
+
+```bash
+yarn build
+```
