@@ -1,6 +1,6 @@
 # My Movie Collection
 
-Simple react application for saving favorite movies using OMDb API.
+Simple movie database application using React and OMDb API.
 
 ## File structure
 
